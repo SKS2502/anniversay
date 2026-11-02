@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#100d18" />
+    <meta
+      name="description"
+      content="A little place made for our story."
+    />
+    <title>Our Story</title>
+  </head>
+  <body>
+    <main class="experience" aria-label="Our Story anniversary experience">
+      <div id="scene" class="scene" aria-hidden="true"></div>
+
+      <section class="welcome" id="welcome" aria-labelledby="welcome-title">
+        <div class="welcome__content">
+          <p class="eyebrow">A LITTLE PLACE, MADE FOR YOU</p>
+          <h1 id="welcome-title">Our Story <span aria-hidden="true">♥</span></h1>
+          <p class="welcome__subtitle">Every little moment led me to you.</p>
+          <button class="enter-button" id="enter-button" type="button">
+            <span>Enter our world</span>
+            <span class="enter-button__arrow" aria-hidden="true">→</span>
+          </button>
+          <p class="welcome__note" id="loading-status" role="status" hidden></p>
+          <p class="welcome__note">Background music begins when you enter.</p>
+        </div>
+        <div class="welcome__glow" aria-hidden="true"></div>
+      </section>
+
+      <div class="experience__hint" id="experience-hint" aria-live="polite">
+        Your little world is just beginning. <span>Use W A S D to explore.</span>
+      </div>
+      <button
+        class="interaction-prompt"
+        id="interaction-prompt"
+        type="button"
+        aria-label="Interact with the nearby story moment"
+        hidden
+      ></button>
+      <button
+        class="pause-control"
+        id="pause-button"
+        type="button"
+        aria-label="Pause experience"
+        hidden
+      >
+        <span aria-hidden="true">Ⅱ</span>
+      </button>
+      <button
+        class="music-control"
+        id="music-button"
+        type="button"
+        aria-label="Mute background music"
+        title="Mute background music"
+        hidden
+      >
+        <span class="music-control__icon" aria-hidden="true">♫</span>
+      </button>
+      <audio id="background-music" src="/audio/background.mp3" preload="none" loop></audio>
+      <div class="intro-message" id="intro-message" role="status" hidden></div>
+      <div class="mobile-controls" id="mobile-controls" aria-label="Touch controls">
+        <div class="joystick" id="joystick" aria-label="Movement joystick">
+          <div class="joystick__knob" id="joystick-knob"></div>
+        </div>
+        <p class="mobile-controls__look" aria-hidden="true">DRAG TO LOOK</p>
+      </div>
+      <section
+        class="memory-popup"
+        id="memory-popup"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="memory-title"
+        hidden
+      >
+        <div class="memory-popup__card">
+          <button
+            class="memory-popup__close"
+            id="memory-close"
+            type="button"
+            aria-label="Close memory"
+          >
+            ×
+          </button>
+          <div class="memory-popup__photo">
+            <img id="memory-image" alt="" hidden />
+            <div class="memory-popup__placeholder" id="memory-image-placeholder">
+              <span aria-hidden="true">♥</span>
+              <p>Your photo goes here</p>
+            </div>
+          </div>
+          <div class="memory-popup__copy">
+            <p class="memory-popup__date" id="memory-date" hidden></p>
+            <h2 id="memory-title"></h2>
+            <p class="memory-popup__message" id="memory-message"></p>
+          </div>
+        </div>
+      </section>
+      <section
+        class="experience-overlay"
+        id="pause-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pause-title"
+        hidden
+      >
+        <div class="experience-overlay__card">
+          <p class="eyebrow">TAKE YOUR TIME</p>
+          <h2 id="pause-title">A little pause</h2>
+          <p class="experience-overlay__copy">
+            Your story will be right here when you’re ready.
+          </p>
+          <button class="enter-button" id="resume-button" type="button">
+            <span>Continue exploring</span>
+            <span class="enter-button__arrow" aria-hidden="true">→</span>
+          </button>
+          <p class="experience-overlay__note">Press Esc or P to resume</p>
+        </div>
+      </section>
+      <section
+        class="experience-overlay experience-overlay--finale"
+        id="finale"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="finale-title"
+        hidden
+      >
+        <div class="experience-overlay__card experience-overlay__card--finale">
+          <p class="eyebrow">TO MY FAVORITE PERSON</p>
+          <h2 id="finale-title"></h2>
+          <p class="experience-overlay__copy" id="finale-message"></p>
+          <p class="experience-overlay__signoff" id="finale-signoff"></p>
+          <button class="enter-button" id="finale-close" type="button">
+            <span>Keep exploring</span>
+            <span class="enter-button__arrow" aria-hidden="true">♥</span>
+          </button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
