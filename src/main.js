@@ -1,17 +1,18 @@
 import './style.css';
+import { createAnniversaryMusic } from './audio/anniversaryMusic.js';
 
 const welcome = document.querySelector('#welcome');
 const enterButton = document.querySelector('#enter-button');
 const enterLabel = enterButton.querySelector('span');
 const loadingStatus = document.querySelector('#loading-status');
-const backgroundMusic = document.querySelector('#background-music');
 const musicButton = document.querySelector('#music-button');
 const musicIcon = musicButton.querySelector('.music-control__icon');
+const backgroundMusic = createAnniversaryMusic();
 let loadingExperience = false;
 let musicEnabled = true;
 
 function updateMusicButton() {
-  const isPlaying = !backgroundMusic.paused && !backgroundMusic.ended;
+  const isPlaying = backgroundMusic.isPlaying();
   musicIcon.textContent = isPlaying ? '♫' : musicEnabled ? '♪' : '×';
   const label = isPlaying ? 'Mute background music' : 'Play background music';
   musicButton.setAttribute('aria-label', label);
@@ -20,11 +21,15 @@ function updateMusicButton() {
 
 function startMusicFromUserGesture() {
   if (!musicEnabled) return;
-  backgroundMusic.play().catch((error) => {
-    console.error('Unable to play the supplied background music.', error);
-    musicButton.setAttribute('aria-label', 'Background music unavailable');
-    musicButton.title = 'Background music could not be played';
-  });
+  backgroundMusic
+    .play()
+    .then(updateMusicButton)
+    .catch((error) => {
+      console.error('Unable to play the original anniversary music.', error);
+      musicButton.setAttribute('aria-label', 'Background music unavailable');
+      musicButton.title = 'Background music could not be played';
+    });
+  updateMusicButton();
 }
 
 async function enterExperience() {
@@ -51,12 +56,10 @@ async function enterExperience() {
 }
 
 musicButton.addEventListener('click', () => {
-  musicEnabled = backgroundMusic.paused;
+  musicEnabled = !musicEnabled;
   if (musicEnabled) startMusicFromUserGesture();
   else backgroundMusic.pause();
   updateMusicButton();
 });
-backgroundMusic.addEventListener('play', updateMusicButton);
-backgroundMusic.addEventListener('pause', updateMusicButton);
 
 enterButton.addEventListener('click', enterExperience);

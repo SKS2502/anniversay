@@ -14,51 +14,42 @@ export const PLANTER_POSITIONS = [
       radius: 0.72,
     };
   }),
-  ...Array.from({ length: 4 }, (_, index) => {
-    const angle = index * (Math.PI / 2);
-    return {
-      x: Math.cos(angle) * 3.55,
-      z: Math.sin(angle) * 3.55,
-      radius: 0.62,
-    };
-  }),
 ];
 export const letterStandMessages = [
   {
-    title: 'A NOTE FOR YOU',
+    title: 'TWO YEARS, STILL US',
     lines: [
-      'In every version of my life,',
-      'I would still hope to find you.',
-      'Thank you for making ordinary',
-      'days feel like our favorite ones.',
+      'Two years of finding magic',
+      'in the ordinary, and joy',
+      'in every day we share.',
+      'I would choose you, always.',
     ],
   },
   {
-    title: 'THE LITTLE THINGS',
+    title: 'MY FAVORITE FOREVER',
     lines: [
-      'Your laugh from the next room.',
-      'Our talks that turn into midnight.',
-      'The quiet comfort of your hand',
-      'finding mine. These are my',
-      'favorite kinds of magic.',
+      'Your laugh, your hand in mine,',
+      'the way you make a place feel',
+      'like home. These little things',
+      'are everything to me.',
     ],
   },
   {
-    title: 'MY FAVOURITE PROMISE',
+    title: 'MY PROMISE TO YOU',
     lines: [
-      'To keep choosing you,',
-      'to keep learning your heart,',
-      'and to make a home together',
-      'in every place we go.',
+      'I will keep choosing you,',
+      'keep learning your heart,',
+      'and keep making memories',
+      'with my favorite person.',
     ],
   },
   {
-    title: 'ALWAYS, US',
+    title: 'TO OUR NEXT CHAPTER',
     lines: [
-      'Here is to every chapter',
-      'we have written, and all the',
-      'beautiful little moments',
-      'still waiting for us.',
+      'Two years behind us,',
+      'a whole lifetime ahead,',
+      'and my hand right here',
+      'waiting for yours.',
     ],
   },
 ];

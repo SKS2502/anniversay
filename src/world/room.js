@@ -250,7 +250,7 @@ function createSectionPlaque(title, angle) {
   );
   plaque.position.set(
     (GALLERY_FRAME_RADIUS - 0.18) * Math.cos(angle),
-    6.45,
+    6.55,
     (GALLERY_FRAME_RADIUS - 0.18) * Math.sin(angle),
   );
   plaque.rotation.y = -angle - Math.PI / 2;
@@ -266,11 +266,134 @@ function createGalleryLabels() {
   for (const section of gallerySections) {
     const firstAngle = -Math.PI / 2 + halfStep + frameIndex * step;
     const lastAngle = firstAngle + (section.memories.length - 1) * step;
-    const centerAngle = (firstAngle + lastAngle) / 2;
+    let centerAngle = (firstAngle + lastAngle) / 2;
+    const pilasterStep = Math.PI / 8;
+    const nearestPilaster =
+      -((3 * Math.PI) / 8) +
+      Math.round((centerAngle + (3 * Math.PI) / 8) / pilasterStep) *
+        pilasterStep;
+    const pilasterOffset = Math.atan2(
+      Math.sin(centerAngle - nearestPilaster),
+      Math.cos(centerAngle - nearestPilaster),
+    );
+    if (Math.abs(pilasterOffset) < 0.01) centerAngle += halfStep;
     labels.add(createSectionPlaque(section.title, centerAngle));
     frameIndex += section.memories.length;
   }
   return labels;
+}
+
+function createAnniversaryBanner(
+  text,
+  angle,
+  boardGeometry,
+  boardMaterial,
+  faceGeometry,
+  studGeometry,
+  studMaterial,
+) {
+  const banner = new THREE.Group();
+  const board = new THREE.Mesh(boardGeometry, boardMaterial);
+  banner.add(board);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 1200;
+  canvas.height = 240;
+  const context = canvas.getContext('2d');
+  const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradient.addColorStop(0, '#fffaf1');
+  gradient.addColorStop(0.5, '#f4eadb');
+  gradient.addColorStop(1, '#fffaf1');
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  context.strokeStyle = '#c7a576';
+  context.lineWidth = 5;
+  context.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+  context.strokeStyle = 'rgba(199, 165, 118, 0.58)';
+  context.lineWidth = 2;
+  context.strokeRect(32, 32, canvas.width - 64, canvas.height - 64);
+
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillStyle = '#a9855c';
+  context.font = '44px Georgia, serif';
+  context.fillText('♥', 92, canvas.height / 2);
+  context.fillText('♥', canvas.width - 92, canvas.height / 2);
+
+  context.fillStyle = '#655747';
+  let fontSize = 58;
+  context.font = `600 ${fontSize}px Georgia, serif`;
+  while (context.measureText(text).width > 900 && fontSize > 36) {
+    fontSize -= 2;
+    context.font = `600 ${fontSize}px Georgia, serif`;
+  }
+  context.fillText(text, canvas.width / 2, canvas.height / 2);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 4;
+  const face = new THREE.Mesh(
+    faceGeometry,
+    new THREE.MeshBasicMaterial({
+      map: texture,
+      toneMapped: false,
+    }),
+  );
+  face.position.z = 0.061;
+  banner.add(face);
+
+  for (const x of [-2.48, 2.48]) {
+    const stud = new THREE.Mesh(studGeometry, studMaterial);
+    stud.position.set(x, 0, 0.075);
+    banner.add(stud);
+  }
+
+  banner.position.set(
+    (GALLERY_WALL_RADIUS - 1) * Math.cos(angle),
+    7.25,
+    (GALLERY_WALL_RADIUS - 1) * Math.sin(angle),
+  );
+  banner.rotation.y = -angle - Math.PI / 2;
+  return banner;
+}
+
+function createAnniversaryBanners() {
+  const banners = new THREE.Group();
+  const boardGeometry = new THREE.BoxGeometry(5.55, 1.19, 0.12);
+  const faceGeometry = new THREE.PlaneGeometry(5.45, 1.09);
+  const studGeometry = new THREE.SphereGeometry(0.055, 8, 6);
+  const boardMaterial = new THREE.MeshStandardMaterial({
+    color: '#c4a477',
+    metalness: 0.48,
+    roughness: 0.4,
+  });
+  const studMaterial = new THREE.MeshStandardMaterial({
+    color: '#bd9a68',
+    metalness: 0.52,
+    roughness: 0.38,
+  });
+  const placements = [
+    { text: 'HAPPY 2ND ANNIVERSARY', angle: -(5 * Math.PI) / 16 },
+    { text: 'TWO YEARS OF US', angle: (7 * Math.PI) / 16 },
+    { text: 'OUR FAVORITE STORY', angle: (19 * Math.PI) / 16 },
+  ];
+
+  placements.forEach(({ text, angle }) => {
+    banners.add(
+      createAnniversaryBanner(
+        text,
+        angle,
+        boardGeometry,
+        boardMaterial,
+        faceGeometry,
+        studGeometry,
+        studMaterial,
+      ),
+    );
+  });
+  banners.name = 'anniversary-wall-banners';
+  return banners;
 }
 
 function createPlanterRing() {
@@ -632,6 +755,7 @@ export function createRoom() {
     createCurvedArchitecture(),
     createWallPanels(),
     createGalleryLabels(),
+    createAnniversaryBanners(),
     createFocalDisplay(),
     createGalleryLights(),
     createCenterpiece(),

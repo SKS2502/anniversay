@@ -65,9 +65,9 @@ export function createMemoryManager({
   const framesById = new Map();
   const textureLoader = new THREE.TextureLoader();
   const frameSizes = [
-    { width: 2.5, height: 3.05 },
-    { width: 2.05, height: 2.65 },
-    { width: 2.35, height: 1.9 },
+    { width: 4.05, height: 4.8 },
+    { width: 3.7, height: 4.5 },
+    { width: 4.2, height: 3.2 },
   ];
   const resources = {
     frameGeometries: frameSizes.map(
@@ -80,10 +80,21 @@ export function createMemoryManager({
     lightBarGeometries: frameSizes.map(
       ({ width }) => new THREE.BoxGeometry(width - 0.5, 0.075, 0.09),
     ),
+    captionGeometries: frameSizes.map(
+      ({ width }) => new THREE.BoxGeometry(width - 0.1, 0.9, 0.08),
+    ),
+    captionFaceGeometries: frameSizes.map(
+      ({ width }) => new THREE.PlaneGeometry(width - 0.18, 0.82),
+    ),
     trimMaterial: new THREE.MeshStandardMaterial({
       color: '#c4a477',
       metalness: 0.55,
       roughness: 0.34,
+    }),
+    captionFrameMaterial: new THREE.MeshStandardMaterial({
+      color: '#c4a477',
+      metalness: 0.48,
+      roughness: 0.4,
     }),
     lightBarMaterial: new THREE.MeshStandardMaterial({
       color: '#fff2dc',
@@ -137,12 +148,25 @@ export function createMemoryManager({
   let isOpen = false;
 
   for (const memory of memories) {
+    const styleIndex =
+      memory.frameStyle === 'hero'
+        ? 0
+        : memory.frameStyle === 'landscape'
+          ? 2
+          : 1;
+    const frameMemory = {
+      ...memory,
+      position: {
+        ...memory.position,
+        y: frameSizes[styleIndex].height / 2 + 1.45,
+      },
+    };
     const { group: frame, imagePanel, hitTarget } = createPhotoFrame(
-      memory,
+      frameMemory,
       resources,
     );
-    framesById.set(memory.id, {
-      memory,
+    framesById.set(frameMemory.id, {
+      memory: frameMemory,
       frame,
       imagePanel,
       imageLoadStarted: false,
@@ -163,7 +187,10 @@ export function createMemoryManager({
         const panelAspect =
           imagePanel.geometry.parameters.width /
           imagePanel.geometry.parameters.height;
-        if (imageAspect > panelAspect) {
+        if (memory.fitImage) {
+          imagePanel.scale.x = Math.min(1, imageAspect / panelAspect);
+          imagePanel.scale.y = Math.min(1, panelAspect / imageAspect);
+        } else if (imageAspect > panelAspect) {
           texture.repeat.x = panelAspect / imageAspect;
           texture.offset.x = (1 - texture.repeat.x) / 2;
         } else {
